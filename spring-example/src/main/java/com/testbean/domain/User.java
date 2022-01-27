@@ -31,4 +31,8 @@ public class User {
 	public String getName() {
 		return name;
 	}
+
+	public void test() {
+		System.out.println("invoke test method ...");
+	}
 }
