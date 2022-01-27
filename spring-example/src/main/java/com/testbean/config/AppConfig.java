@@ -20,21 +20,28 @@ import javax.sql.DataSource;
 @ComponentScan("com.testbean")
 @EnableAspectJAutoProxy
 @EnableTransactionManagement // 开启事务
-@Configuration // 开启事务必须配合Configuration注解使用
+@Configuration // 开启事务必须配合Configuration注解使用，否则会生成多个不同的dataSource对象
 public class AppConfig {
 
 	@Bean
 	public JdbcTemplate jdbcTemplate() {
-		return new JdbcTemplate(dataSource());
+		DataSource dataSource = dataSource();
+		System.out.println(dataSource);
+		return new JdbcTemplate(dataSource);
 	}
 
 	@Bean
 	public PlatformTransactionManager transactionManager() {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-		transactionManager.setDataSource(dataSource());
+		DataSource dataSource = dataSource();
+		System.out.println(dataSource);
+		transactionManager.setDataSource(dataSource);
 		return transactionManager;
 	}
 
+	/**
+	 * 数据库连接
+	 */
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
