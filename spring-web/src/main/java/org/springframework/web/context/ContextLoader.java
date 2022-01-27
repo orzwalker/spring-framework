@@ -292,6 +292,9 @@ public class ContextLoader {
 					configureAndRefreshWebApplicationContext(cwac, servletContext);
 				}
 			}
+
+			// 将创建好的父容器放到servletContext中，<k,v>结构
+			// 创建子容器时会去查一遍，父容器中是否存在
 			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
 
 			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
@@ -384,6 +387,7 @@ public class ContextLoader {
 		}
 
 		wac.setServletContext(sc);
+		// 获取到配置文件
 		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION_PARAM);
 		if (configLocationParam != null) {
 			wac.setConfigLocation(configLocationParam);
