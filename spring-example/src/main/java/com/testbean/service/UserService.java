@@ -18,6 +18,7 @@ public class UserService {
 	private JdbcTemplate jdbcTemplate;
 
 	public void test() {
+		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		System.out.println(orderService);
 	}
 
