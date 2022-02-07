@@ -63,7 +63,13 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		// 先调用父类的构造方法，生成beanFactory（DefaultListableBeanFactory beanFactory;）
+
+
+		// 注解配置读取器，用于对特定注解（@Service，@Repository等）的类进行读取转换成BeanDefinition
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+
+		// 路径扫描器，对指定的包目录进行扫描查找bean对象
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -83,9 +89,16 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * @param componentClasses one or more component classes &mdash; for example,
 	 * {@link Configuration @Configuration} classes
 	 */
+	/**
+	 * 初始化容器
+	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
+
+		// 注册spring内置后置处理器的 BeanDefinition 到容器
 		this();
+		// 注册配置类 BeanDefinition 到容器
 		register(componentClasses);
+		// 加载或者刷新容器中的bean
 		refresh();
 	}
 
