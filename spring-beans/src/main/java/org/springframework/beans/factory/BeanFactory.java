@@ -137,6 +137,9 @@ public interface BeanFactory {
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the specified name
 	 * @throws BeansException if the bean could not be obtained
 	 */
+	/**
+	 * 获取单个bean
+	 */
 	Object getBean(String name) throws BeansException;
 
 	/**

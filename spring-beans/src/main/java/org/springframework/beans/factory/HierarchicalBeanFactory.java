@@ -31,6 +31,7 @@ import org.springframework.lang.Nullable;
  * @since 07.07.2003
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#setParentBeanFactory
  */
+// 分层的，可以在应用中起多个BeanFactory，然后将各个BeanFactory设置为父子关系
 public interface HierarchicalBeanFactory extends BeanFactory {
 
 	/**

@@ -515,9 +515,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	/**
 	 * 刷新容器
+	 * 为什么叫refresh，而不是init————ApplicationContext建立后可以通过调用refresh方法重建，
+	 * refresh会将原来的ApplicationContext销毁，然后重新执行一次初始化操作
 	 */
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
+		// 加锁，保证启动、销毁容器串行化
 		synchronized (this.startupShutdownMonitor) {
 
 			// 1.刷新前的预处理
