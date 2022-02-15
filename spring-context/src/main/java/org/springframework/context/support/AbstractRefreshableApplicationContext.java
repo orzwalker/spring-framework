@@ -70,7 +70,8 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	@Nullable
 	private Boolean allowCircularReferences;
 
-	/** Bean factory for this context. */
+	/** Bean factory for this context.*/
+	// 当前context
 	@Nullable
 	private volatile DefaultListableBeanFactory beanFactory;
 
@@ -119,15 +120,28 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		// 关闭旧的BeanFactory
+
+		// 如果【当前】ApplicationContext中已经加载过BeanFactory了，就销毁所有Bean，并关闭BeanFactory
+		// 注意，应用中BeanFactory可以有多个，这里说的不是全局是否由BeanFactory，而是当前的ApplicationContext是否有
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
 		}
+
+		// 创建新的BeanFactory
 		try {
+			// 初始化一个DefaultListableBeanFactory
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			// 用户BeanFactory的序列化
 			beanFactory.setSerializationId(getId());
+
+			// 设置BeanFactory的两个配置属性：是否允许Bean覆盖；是否允许循环引用
 			customizeBeanFactory(beanFactory);
+
+			// 加载Bean到BeanFactory中
 			loadBeanDefinitions(beanFactory);
+
 			this.beanFactory = beanFactory;
 		}
 		catch (IOException ex) {
@@ -154,6 +168,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
+	 * 【当前】Context，并不是全局
 	 * Determine whether this context currently holds a bean factory,
 	 * i.e. has been refreshed at least once and not been closed yet.
 	 */

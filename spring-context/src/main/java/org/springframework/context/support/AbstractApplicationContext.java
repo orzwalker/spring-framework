@@ -531,6 +531,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			/**
+			 * 重点
 			 * 2.获取beanFactory
 			 * 解析成BeanDefinition，还未初始化，放到BeanFactory
 			 * 放到<beanName, beanDefinition> map中
@@ -622,8 +623,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * active flag as well as performing any initialization of property sources.
 	 */
 	protected void prepareRefresh() {
-		// 记录容器的启动时间
 		// Switch to active.
+		// 记录容器的启动时间
 		this.startupDate = System.currentTimeMillis();
 		this.closed.set(false);
 		// 设置为已启动
@@ -643,6 +644,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
+		// 校验配置文件
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
@@ -670,13 +672,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 重要
+	 * 初始化BeanFactory、加载Bean、注册Bean等
+	 *
 	 * Tell the subclass to refresh the internal bean factory.
 	 * @return the fresh BeanFactory instance
 	 * @see #refreshBeanFactory()
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+
+		// 关闭旧的BeanFactory，创建新的BeanFactory，加载Bean、注册Bean
 		refreshBeanFactory();
+
+		// 返回刚创建的BeanFactory
 		return getBeanFactory();
 	}
 
