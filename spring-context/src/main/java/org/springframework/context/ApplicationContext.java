@@ -112,6 +112,11 @@ public interface ApplicationContext extends EnvironmentCapable, ListableBeanFact
 	 * @see ConfigurableApplicationContext#refresh()
 	 * @see ConfigurableApplicationContext#getBeanFactory()
 	 */
+
+	/**
+	 * ApplicationContext没有继承AutowireCapableBeanFactory接口
+	 * 是组合关系，ApplicationContext通过调用该方法，可以获取到AutowireCapableBeanFactory实例
+	 */
 	AutowireCapableBeanFactory getAutowireCapableBeanFactory() throws IllegalStateException;
 
 }
