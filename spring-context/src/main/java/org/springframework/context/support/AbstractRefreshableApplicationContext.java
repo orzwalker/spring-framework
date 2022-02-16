@@ -135,14 +135,16 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 		// 创建新的BeanFactory
 		try {
 			// 初始化一个DefaultListableBeanFactory
+			// ApplicationContext内部持有DefaultListableBeanFactory实例，而DefaultListableBeanFactory是BeanFactory体系中功能最全的类，所有的BeanFactory相关的操作都是该实例处理的
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			// 用户BeanFactory的序列化
 			beanFactory.setSerializationId(getId());
 
 			// 设置BeanFactory的两个配置属性：是否允许Bean覆盖；是否允许循环引用
+			// 订制
 			customizeBeanFactory(beanFactory);
 
-			// 加载Bean到BeanFactory中
+			// 加载Bean，并到BeanFactory中
 			loadBeanDefinitions(beanFactory);
 
 			this.beanFactory = beanFactory;
@@ -230,9 +232,11 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
+		// 是否允许Bean定义覆盖
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
+		// 是否允许Bean间的循环依赖
 		if (this.allowCircularReferences != null) {
 			beanFactory.setAllowCircularReferences(this.allowCircularReferences);
 		}

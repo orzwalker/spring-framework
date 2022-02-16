@@ -535,6 +535,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			 * 2.获取beanFactory
 			 * 解析成BeanDefinition，还未初始化，放到BeanFactory
 			 * 放到<beanName, beanDefinition> map中
+			 *
+			 * xml使用该方法实现bean的加载、解析、注册
+			 * 注解方式使用invokeBeanFactoryPostProcessors
 			 */
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
@@ -552,6 +555,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 5.执行BeanFactoryPostProcessor各个实现类的postProcessBeanFactory方法
 				// 步骤4中不是已经执行了吗，为什么还需要执行一遍?
 				// Invoke factory processors registered as beans in the context.
+				/**
+				 * 注解方式使用方法 进行 Bean的加载、解析、注册
+				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// 6.注册BeanPostProcessor，即bean后置处理器
