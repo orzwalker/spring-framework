@@ -291,6 +291,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			// Check if bean definition exists in this factory.
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
+				// 当前容器中不存在，检查父容器中是否存在
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
 				if (parentBeanFactory instanceof AbstractBeanFactory) {
@@ -298,6 +299,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							nameToLookup, requiredType, args, typeCheckOnly);
 				}
 				else if (args != null) {
+					// 返回父容器中的查询结果
 					// Delegation to parent with explicit args.
 					return (T) parentBeanFactory.getBean(nameToLookup, args);
 				}
@@ -314,10 +316,16 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				markBeanAsCreated(beanName);
 			}
 
+			/**
+			 * 准备创建Bean
+			 * 对于singleton bean，容器中此时还未创建此bean
+			 * 对于prototype Bean来说，本来就是要创建一个新的bean
+			 */
 			try {
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
+				// 先初始化所有依赖的bean
 				// Guarantee initialization of beans that the current bean depends on.
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
@@ -326,8 +334,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
+						// 注册依赖关系
 						registerDependentBean(dep, beanName);
 						try {
+							// 先初始化被依赖项
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -337,10 +347,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 				}
 
+				// 如果是singleton scope，创建实例
 				// Create bean instance.
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
+							// 创建Bean
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {
@@ -354,11 +366,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
 
+				// 如果是prototype scope，创建实例
 				else if (mbd.isPrototype()) {
 					// It's a prototype -> create a new instance.
 					Object prototypeInstance = null;
 					try {
 						beforePrototypeCreation(beanName);
+						// 创建Bean
 						prototypeInstance = createBean(beanName, mbd, args);
 					}
 					finally {
@@ -367,6 +381,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					bean = getObjectForBeanInstance(prototypeInstance, name, beanName, mbd);
 				}
 
+				// 如果不是singleton，也不是prototype，需要委托给相应的实现类处理
 				else {
 					String scopeName = mbd.getScope();
 					if (!StringUtils.hasLength(scopeName)) {
@@ -380,6 +395,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						Object scopedInstance = scope.get(beanName, () -> {
 							beforePrototypeCreation(beanName);
 							try {
+								// 创建bean
 								return createBean(beanName, mbd, args);
 							}
 							finally {
@@ -402,6 +418,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
+		// 检查类型
 		// Check if required type matches the type of the actual bean instance.
 		if (requiredType != null && !requiredType.isInstance(bean)) {
 			try {
