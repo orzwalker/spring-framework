@@ -396,6 +396,7 @@ public class BeanDefinitionParserDelegate {
 
 
 	/**
+	 * 解析<bean /> 标签
 	 * Parses the supplied {@code <bean>} element. May return {@code null}
 	 * if there were errors during parse. Errors are reported to the
 	 * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
@@ -415,13 +416,22 @@ public class BeanDefinitionParserDelegate {
 		String id = ele.getAttribute(ID_ATTRIBUTE);
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 
+		/**
+		 * ie
+		 * <bean id="exampleBean" name="name1, name2, name3" class="com.javadoop.ExampleBean"
+		 * scope="singleton" lazy-init="true" init-method="init" destroy-method="cleanup">
+		 */
+
 		List<String> aliases = new ArrayList<>();
 		if (StringUtils.hasLength(nameAttr)) {
+			// 将name属性的定义按照 ",; " 切分成数组
 			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
+			// <bean name="m1, m2, m3" class="xx">  切分后，beanName是m1，别名有2个，是m2，m3
 			aliases.addAll(Arrays.asList(nameArr));
 		}
 
 		String beanName = id;
+		// 如果没有设置id，那么使用别名列表中的第一个名字作为beanName
 		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {
 			beanName = aliases.remove(0);
 			if (logger.isTraceEnabled()) {
@@ -434,9 +444,14 @@ public class BeanDefinitionParserDelegate {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
 
+		// 根据<bean />中的配置，创建BeanDefinition，然后把配置中的信息都设置到实例中
+		// 执行完该方法后，一个BeanDefinition实例就被创建出来了
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
+
+		// <bean />标签解析结束
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
+				// 如果没有设置beanName
 				try {
 					if (containingBean != null) {
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
@@ -465,6 +480,7 @@ public class BeanDefinitionParserDelegate {
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
+			// 返回创建好的【一个】BeanDefinitionHolder
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
 
@@ -493,6 +509,8 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 根据配置创建BeanDefinition
+	 *
 	 * Parse the bean definition itself, without regard to name or aliases. May return
 	 * {@code null} if problems occurred during the parsing of the bean definition.
 	 */
@@ -512,8 +530,10 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
+			// 创建BeanDefinition，并设置类信息
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
+			// 设置BeanDefinition的属性，这些属性都在抽象类中
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
 

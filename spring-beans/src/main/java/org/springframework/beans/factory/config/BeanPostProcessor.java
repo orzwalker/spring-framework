@@ -57,7 +57,7 @@ import org.springframework.lang.Nullable;
  */
 
 /**
- * 注册BeanPOSTProcessor的实现类
+ * 注册BeanPostProcessor的实现类
  * 两个方法分别在bean初始化前和初始化后 得到执行，此时，bean还未初始化
  */
 

@@ -846,6 +846,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public void freezeConfiguration() {
+		// frozen 冻结的
 		this.configurationFrozen = true;
 		this.frozenBeanDefinitionNames = StringUtils.toStringArray(this.beanDefinitionNames);
 	}
@@ -865,6 +866,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return (this.configurationFrozen || super.isBeanEligibleForMetadataCaching(beanName));
 	}
 
+	/**
+	 * 初始化所有非懒加载的singleton bean
+	 * 提前实例化单例Bean
+	 */
 	@Override
 	public void preInstantiateSingletons() throws BeansException {
 		if (logger.isTraceEnabled()) {
@@ -877,9 +882,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		// Trigger initialization of all non-lazy singleton beans...
 		for (String beanName : beanNames) {
+			// 合并父Bean中的配置 注意 <bean id="" class="" parent="" /> 中的 parent
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+			// 非抽象、非懒加载、单例Bean
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				if (isFactoryBean(beanName)) {
+					// 处理FactoryBean
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					if (bean instanceof FactoryBean) {
 						FactoryBean<?> factory = (FactoryBean<?>) bean;
@@ -899,10 +907,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					}
 				}
 				else {
+					// 普通bean
 					getBean(beanName);
 				}
 			}
 		}
+
+		/**
+		 * 所有的费懒加载的singleton bean都已经完成了初始化
+		 */
 
 		// Trigger post-initialization callback for all applicable beans...
 		for (String beanName : beanNames) {
@@ -927,6 +940,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of BeanDefinitionRegistry interface
 	//---------------------------------------------------------------------
 
+	/**
+	 * 注册bean
+	 * 核心就是放到<String, BeanDefinition>结构中
+	 * @param beanName BeanDefinitionHolder中的beanName属性
+	 */
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
@@ -947,10 +965,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
 		if (existingDefinition != null) {
 			// Bean已经存在
-			if (!isAllowBeanDefinitionOverriding()) {
+			if (!isAllowBeanDefinitionOverriding()) {A
 				// 是否允许覆盖，不允许时抛出异常
 				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
 			}
+			// 允许覆盖
+			// 用框架的Bean覆盖用户自定义的Bean
 			else if (existingDefinition.getRole() < beanDefinition.getRole()) {
 				// e.g. was ROLE_APPLICATION, now overriding with ROLE_SUPPORT or ROLE_INFRASTRUCTURE
 				if (logger.isInfoEnabled()) {
@@ -960,7 +980,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else if (!beanDefinition.equals(existingDefinition)) {
-				// 用新的Bean覆盖旧的
+				// 用不同的新的Bean覆盖旧的
 				if (logger.isDebugEnabled()) {
 					logger.debug("Overriding bean definition for bean '" + beanName +
 							"' with a different definition: replacing [" + existingDefinition +
@@ -980,8 +1000,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 		else {
 			// Bean不存在
+
+			// 判断是否有其他的Bean开始初始化了
 			if (hasBeanCreationStarted()) {
-				// 判断是否有其他的Bean开始初始化了
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
 					this.beanDefinitionMap.put(beanName, beanDefinition);
@@ -1001,8 +1022,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				// ArrayList 按注册的顺序存放
 				this.beanDefinitionNames.add(beanName);
 
-				// 手动的
-				// LinkedHashMap
+				// manual 手动的
+				// LinkedHashSet结构，存放手动注册的singleton bean
+				// remove掉的不是 手动注册的
 				removeManualSingletonName(beanName);
 			}
 			this.frozenBeanDefinitionNames = null;
