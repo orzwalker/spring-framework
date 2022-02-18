@@ -4,6 +4,9 @@ import com.testbean.config.AppConfig;
 import com.testbean.service.UserService;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.Arrays;
 
 /**
  * @author walker
@@ -18,11 +21,20 @@ public class TestUser {
 		int beanDefinitionCount = defaultListableBeanFactory.getBeanDefinitionCount();
 		System.out.println("beanDefinitionCount: " + beanDefinitionCount);
 
-		UserService service = (UserService) context.getBean("userService");
+		// 根据beanName获取Bean
+		UserService service = context.getBean("userService", UserService.class);
 		System.out.println(service);
+
+		// 通过alias获取Bean
+		JdbcTemplate jdbcTemplate = context.getBean("jdbcTemplateAlias1", JdbcTemplate.class);
+		System.out.println(jdbcTemplate);
+
+		// 根据beanName获取alias数组
+		String[] jdbcTemplates = context.getAliases("jdbcTemplate");
+		System.out.println(Arrays.toString(jdbcTemplates));
 
 		service.test();
 
-		service.insertData();
+		// service.insertData();
 	}
 }

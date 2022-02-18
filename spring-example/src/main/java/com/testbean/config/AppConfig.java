@@ -23,7 +23,8 @@ import javax.sql.DataSource;
 @Configuration // 开启事务必须配合Configuration注解使用，否则会生成多个不同的dataSource对象
 public class AppConfig {
 
-	@Bean
+	// 第一个是beanName 后边两个是别名
+	@Bean({"jdbcTemplate", "jdbcTemplateAlias1", "jdbcTemplateAlias2"})
 	public JdbcTemplate jdbcTemplate() {
 		DataSource dataSource = dataSource();
 		System.out.println(dataSource);
