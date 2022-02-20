@@ -103,7 +103,7 @@ public interface BeanPostProcessor {
 	 * @see org.springframework.beans.factory.FactoryBean
 	 */
 	@Nullable
-	default Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException, IllegalAccessException {
+	default Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		return bean;
 	}
 
