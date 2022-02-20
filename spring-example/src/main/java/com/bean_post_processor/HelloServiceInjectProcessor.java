@@ -42,19 +42,21 @@ public class HelloServiceInjectProcessor implements BeanPostProcessor {
 		return bean;
 	}
 
-	private void handlerRoutingInjected(Field field, Object bean, Class<?> type) throws IllegalAccessException {
+	private void handlerRoutingInjected(Field field, Object bean, Class type) throws IllegalAccessException {
 		// <beanName, instance>
-		Map<String, ?> beansOfType = applicationContext.getBeansOfType(type);
+		Map<String, Object> beansOfType = applicationContext.getBeansOfType(type);
 		field.setAccessible(true);
 		if (beansOfType.size() == 1) {
 			// 设置bean这个对象的filed的value
 			field.set(bean, beansOfType.values().iterator().next());
 		} else if (beansOfType.size() == 2) {
 			// 获取这个field注解上配置的value值
-			String value = field.getAnnotation(RoutingInjected.class).value();
+			String injectValue = field.getAnnotation(RoutingInjected.class).value();
 			// 重点----代理类
 			// 如何拿到这个value对应的Object
-			// 给新创建一个代理类，set到field的value上，执行时就会使用代理类
+			// 给新创建一个代理对象，set到field的value上，执行时就会使用代理类
+			Object proxy = RoutingBeanProxyFactory.createProxy(injectValue, type, beansOfType);
+			field.set(bean, proxy);
 		} else {
 			throw new IllegalAccessException(type + " 对应的bean超过2");
 		}
