@@ -38,32 +38,32 @@ public class HelloServiceInjectProcessor implements BeanPostProcessor {
 					// 如果不是接口，抛出异常
 					throw new BeanCreationException("RoutingInjected 注解只支持接口");
 				}
-				System.out.println(field.getName());
-				// handlerRoutingInjected(field, bean, field.getType());
+				handlerRoutingInjected(field, bean, field.getType());
 			}
 		}
 		return bean;
 	}
 
-//	private void handlerRoutingInjected(Field field, Object bean, Class type) {
-//		try {
-//			// <beanName, instance>
-//			Map beansOfType = applicationContext.getBeansOfType(type);
-//			field.setAccessible(true);
-//			if (beansOfType.size() == 1) {
-//				// 设置bean这个对象的filed的value
-//				field.set(bean, beansOfType.values().iterator().next());
-//			} else if (beansOfType.size() == 2) {
-//				// 获取这个field注解上配置的value值
-//				String injectValue = field.getAnnotation(RoutingInjected.class).value();
-//				// 重点----代理类
-//				// 如何拿到这个value对应的Object
-//				// 给新创建一个代理对象，set到field的value上，执行时就会使用代理类
-//				Object proxy = RoutingBeanProxyFactory.createProxy(injectValue, type, beansOfType);
-//				field.set(bean, proxy);
-//			}
-//		} catch (IllegalAccessException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	private void handlerRoutingInjected(Field field, Object bean, Class<?> type) {
+		try {
+			// <beanName, instance>
+			Map<String, ?> beansOfType = applicationContext.getBeansOfType(type);
+			field.setAccessible(true);
+			if (beansOfType.size() == 1) {
+				// 设置bean这个对象的filed的value
+				field.set(bean, beansOfType.values().iterator().next());
+			} else if (beansOfType.size() == 2) {
+				// 获取这个field注解上配置的value值
+				String injectValue = field.getAnnotation(RoutingInjected.class).value();
+				// 重点----代理类
+				// 如何拿到这个value对应的Object
+				// 给新创建一个代理对象，set到field的value上，执行时就会使用代理类
+				Object proxy = RoutingBeanProxyFactory.createProxy(injectValue, type, beansOfType);
+				System.out.println("proxy: " + proxy);
+				field.set(bean, proxy);
+			}
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
 }

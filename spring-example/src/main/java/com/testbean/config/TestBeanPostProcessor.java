@@ -16,6 +16,7 @@ public class TestBeanPostProcessor implements BeanPostProcessor, Ordered {
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		if (bean instanceof UserService) {
 			UserService userService = (UserService)bean;
+			System.out.println(userService);
 			System.out.println(bean);
 			System.out.println("before: " + beanName);
 		}

@@ -21,7 +21,7 @@ public class RoutingBeanProxyFactory {
 	 * @param beansOfType 容器中type类型的bean  <beanName,instance>
 	 * @return 代理类
 	 */
-	public static Object createProxy(String beanName, Class<?> type, Map<String, Object> beansOfType) {
+	public static Object createProxy(String beanName, Class<?> type, Map<String, ?> beansOfType) {
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setInterfaces(type);
 		Object instance = beansOfType.getOrDefault(beanName, null);
