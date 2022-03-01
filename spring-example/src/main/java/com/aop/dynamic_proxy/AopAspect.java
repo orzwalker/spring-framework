@@ -14,15 +14,23 @@ public class AopAspect {
 	 */
 	@Pointcut("execution(* com.aop.dynamic_proxy.AopService.testAop())")
 	public void pointcut(){
-		System.out.println("pointcut testAop ... ");
+	}
+
+	@Pointcut("@annotation(com.aop.dynamic_proxy.LogAspect)")
+	public void logAspect(){
 	}
 
 	/**
 	 * 前置通知
 	 */
-	@Before("pointcut()")
+	@Before("pointcut() || logAspect()")
 	public void before() {
 		System.out.println("before test aop ...");
+	}
+
+	@Before("logAspect()")
+	public void beforeLogAspect() {
+		System.out.println("before log aspect  ...");
 	}
 
 	/**

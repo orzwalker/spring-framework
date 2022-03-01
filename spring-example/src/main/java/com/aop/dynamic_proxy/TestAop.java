@@ -7,5 +7,7 @@ public class TestAop {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 		AopService aopService = context.getBean(AopService.class);
 		aopService.testAop();
+		System.out.println("\n\n\n");
+		aopService.testLogAspect();
 	}
 }

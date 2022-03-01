@@ -8,4 +8,9 @@ public class AopService {
 	public void testAop() {
 		System.out.println("aop ...");
 	}
+
+	@LogAspect
+	public void testLogAspect() {
+		System.out.println("logAspect ...");
+	}
 }
