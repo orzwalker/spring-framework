@@ -124,7 +124,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
 		// 关闭旧的BeanFactory
-
+		// 一个服务中可以有多个容器，比如父子容器
 		// 如果【当前】ApplicationContext中已经加载过BeanFactory了，就销毁所有Bean，并关闭BeanFactory
 		// 注意，应用中BeanFactory可以有多个，这里说的不是全局是否由BeanFactory，而是当前的ApplicationContext是否有
 		if (hasBeanFactory()) {
@@ -141,10 +141,10 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			beanFactory.setSerializationId(getId());
 
 			// 设置BeanFactory的两个配置属性：是否允许Bean覆盖；是否允许循环引用
-			// 订制
+			// customize--订制、自定义
 			customizeBeanFactory(beanFactory);
 
-			// 加载Bean，并到BeanFactory中
+			// 加载Bean，到BeanFactory中
 			loadBeanDefinitions(beanFactory);
 
 			this.beanFactory = beanFactory;
