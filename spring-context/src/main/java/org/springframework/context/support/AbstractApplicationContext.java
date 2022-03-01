@@ -531,76 +531,79 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			/**
-			 * 重点
+			 * 重点 重点 重点
 			 * 2.获取beanFactory
-			 * 解析成BeanDefinition，还未初始化，放到BeanFactory
-			 * 放到<beanName, BeanDefinition> map中
+			 * 解析成BeanDefinition，还未初始化，放到BeanFactory====放到<beanName, BeanDefinition> map中
 			 *
 			 * xml使用该方法实现bean的加载、解析、注册
 			 * 注解方式使用invokeBeanFactoryPostProcessors
+			 *
+			 * obtain 获得、取得
 			 */
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// 3.预处理beanFactory，向容器中添加一些组件
-			// 准备Bean容器，添加几个BeanPostProcessor，手动注册几个特殊的bean
+			/**
+			 * 3.预处理beanFactory，向容器中添加一些组件
+			 * 准备Bean容器，添加几个BeanPostProcessor，手动注册几个特殊的bean
+			 */
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
 			try {
-				// 4.子类通过重写该方法，可以在BeanFactory创建完成后做进一步设置
-				// 子类都加载注册完成了，但是还没有初始化，可以通过实现该接口，做点事情
-				// Allows post-processing of the bean factory in context subclasses.
 				/**
+				 * 4.子类通过重写该方法，可以在BeanFactory创建完成后做进一步设置
+				 * 子类都加载注册完成了，但是还没有初始化，可以通过实现该接口，做点事情
 				 * 提供给子类的扩展点，到这里所有bean都加载、注册完成了，但是还没有初始化
-				 */
+ 				 */
+				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
-				// 5.执行BeanFactoryPostProcessor各个实现类的postProcessBeanFactory方法
-				// 步骤4中不是已经执行了吗，为什么还需要执行一遍?
-				// Invoke factory processors registered as beans in the context.
 				/**
-				 * 注解方式使用方法 进行 Bean的加载、解析、注册???
-				 *
+				 * 5.执行BeanFactoryPostProcessor各个实现类的postProcessBeanFactory方法
 				 * 调用BeanFactoryPostProcessor各个实现类的postProcessBeanFactory(beanFactory)回调方法
+				 * 注解方式使用方法 进行 Bean的加载、解析、注册???
 				 */
+				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 
-				// 6.注册BeanPostProcessor，即bean后置处理器
-				// bean还未初始化
-				// Register bean processors that intercept bean creation.
 				/**
+				 * 6.注册BeanPostProcessor的实现类，即bean后置处理器
 				 * 注册BeanPostProcessor的实现类
 				 * 有两个方法 postProcessorBeforeInitialization 和 postProcessorAfterInitialization
-				 * 两个方法分别咋Bean初始化前后得到执行
+				 * 两个方法分别咋Bean初始化前、后得到执行
+				 * 此时 bean还未初始化
 				 */
+				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
 
 				// 7.初始化MessageSource组件（做国际化、消息帮规定、消息解析等）
 				// Initialize message source for this context.
 				initMessageSource();
 
-				 // 8.初始化事件派发器，在注册监听器时会用到
+				// 8.初始化事件派发器，在注册监听器时会用到
 				// 时间广播器
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
 
-				// 9.子类重写该方法，在容器刷新时可以自定义逻辑
 				/**
+				 * 9.子类重写该方法，在容器刷新时可以自定义逻辑
 				 * 模板方法（钩子方法）
 				 * 具体的子类可以在这里 初始化一些特殊的bean
 				 */
 				// Initialize other special beans in specific context subclasses.
 				onRefresh();
 
-				// 10.注册监听器
-				// 需要实现ApplicationListener接口
+				/**
+				 * 10.注册监听器
+				 * 需要实现ApplicationListener接口
+				 */
 				// Check for listener beans and register them.
 				registerListeners();
 
 				/**
-				 * 重点 重点
+				 * 重点 重点 重点
 				 * 11.实例化所有剩余的（非惰性初始化）单例
 				 * 初始化所有的singleton beans，除过lazy-init
 				 * 【初始化】/【预初始化】，spring在这个阶段完成了所有的非懒加载的singleton beans的实例化

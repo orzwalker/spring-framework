@@ -7,7 +7,8 @@ public class TestAop {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 		AopService aopService = context.getBean(AopService.class);
 		aopService.testAop();
-		System.out.println("\n\n\n");
+		System.out.println("初始化前赋值id " + aopService.getId());
+		System.out.println("\n");
 		aopService.testLogAspect();
 	}
 }
