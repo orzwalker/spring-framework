@@ -1017,6 +1017,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				// !!!!! 最正常的应该是进这个分支
 				// Still in startup registration phase
 				// 放到map
+				logger.info("registerBeanDefinition, beanName:" + beanName + ", beanDefinition:" + beanDefinition);
 				this.beanDefinitionMap.put(beanName, beanDefinition);
 
 				// ArrayList 按注册的顺序存放

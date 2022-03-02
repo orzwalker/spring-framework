@@ -561,7 +561,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				/**
 				 * 5.执行BeanFactoryPostProcessor各个实现类的postProcessBeanFactory方法
+				 * 获取到beanFactory后，开始执行所有BeanFactoryPostProcessor的回调方法
 				 * 调用BeanFactoryPostProcessor各个实现类的postProcessBeanFactory(beanFactory)回调方法
+				 *
 				 * 注解方式使用方法 进行 Bean的加载、解析、注册???
 				 */
 				// Invoke factory processors registered as beans in the context.

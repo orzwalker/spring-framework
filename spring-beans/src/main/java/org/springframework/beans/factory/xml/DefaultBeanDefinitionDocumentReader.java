@@ -348,6 +348,8 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @see #getReaderContext()
 	 */
 	protected void preProcessXml(Element root) {
+		logger.info("child nodes length : " + root.getChildNodes().getLength());
+		logger.info("before parseBeanDefinitions ... ");
 	}
 
 	/**
@@ -361,6 +363,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @see #getReaderContext()
 	 */
 	protected void postProcessXml(Element root) {
+		logger.info("after parseBeanDefinitions ... ");
 	}
 
 }
