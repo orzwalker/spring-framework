@@ -135,7 +135,8 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 		// 创建新的BeanFactory
 		try {
 			// 初始化一个DefaultListableBeanFactory
-			// ApplicationContext内部持有DefaultListableBeanFactory实例，而DefaultListableBeanFactory是BeanFactory体系中功能最全的类，所有的BeanFactory相关的操作都是该实例处理的
+			// ApplicationContext内部持有DefaultListableBeanFactory实例，而DefaultListableBeanFactory是BeanFactory体系中功能最全的类，
+			// 所有的BeanFactory相关的操作都是委托给这个实例来处理的
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			// 用户BeanFactory的序列化
 			beanFactory.setSerializationId(getId());

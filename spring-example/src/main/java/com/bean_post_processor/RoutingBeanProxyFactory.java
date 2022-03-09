@@ -2,8 +2,11 @@ package com.bean_post_processor;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.omg.CORBA.portable.InvokeHandler;
 import org.springframework.aop.framework.ProxyFactory;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -43,6 +46,20 @@ public class RoutingBeanProxyFactory {
 		@Override
 		public Object invoke(MethodInvocation invocation) throws Throwable {
 			return invocation.getMethod().invoke(target, invocation.getArguments());
+		}
+	}
+
+	static class CustomizeInterceptor implements InvocationHandler {
+
+		private Object target;
+
+		public CustomizeInterceptor(Object ins) {
+			this.target = ins;
+		}
+
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			return method.invoke(target, args);
 		}
 	}
 }
