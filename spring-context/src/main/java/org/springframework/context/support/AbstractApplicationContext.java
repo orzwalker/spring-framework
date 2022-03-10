@@ -534,7 +534,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			 * 重点 重点 重点
 			 * 2.获取beanFactory
 			 * 解析成BeanDefinition，还未初始化，放到BeanFactory====放到<beanName, BeanDefinition> map中
-			 * 完成了所有singleton beans的实力换，接下来等待初始化
+			 * 完成了所有singleton beans的实例化，接下来等待初始化
 			 *
 			 * xml使用该方法实现bean的加载、解析、注册
 			 * 注解方式使用invokeBeanFactoryPostProcessors
