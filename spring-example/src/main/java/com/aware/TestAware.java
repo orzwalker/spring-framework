@@ -11,5 +11,7 @@ public class TestAware {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 		CustomizeAware bean = context.getBean(CustomizeAware.class);
 		System.out.println(bean);
+
+		MyUtils.methodA();
 	}
 }

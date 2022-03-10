@@ -15,14 +15,27 @@ import org.springframework.stereotype.Component;
  * @author walker
  * @since 2022/3/10 22:23
  */
-@Component()
+@Component
 public class CustomizeAware implements BeanNameAware,
 		BeanFactoryAware,
 		ApplicationContextAware,
 		ResourceLoaderAware,
 		BeanClassLoaderAware {
+
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+// =====================================
+
 	@Override
 	public void setBeanName(String name) {
+		setName(name);
 		System.out.println("实现了BeanNameAware接口， beanName:" + name);
 	}
 
