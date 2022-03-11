@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyUtils implements ApplicationContextAware {
 
+	/**
+	 * 工具类中需要IOC容器中某个Bean，同时常规方法使用该工具类（不用注入）
+	 */
 	private static ApplicationContext context;
 
 	@Override
@@ -21,6 +24,6 @@ public class MyUtils implements ApplicationContextAware {
 
 	public static void methodA() {
 		CustomizeAware bean = context.getBean(CustomizeAware.class);
-		System.out.println("工具类中，不用@AutoWired，就可以使用IOC容器中指定bean， " + bean.getName());
+		System.out.println("工具类中，不用@AutoWired，就可以使用IOC容器中指定bean， " + bean);
 	}
 }

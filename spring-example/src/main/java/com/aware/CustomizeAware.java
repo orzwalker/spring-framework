@@ -22,40 +22,38 @@ public class CustomizeAware implements BeanNameAware,
 		ResourceLoaderAware,
 		BeanClassLoaderAware {
 
-	private String name;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-// =====================================
+	// 拿到这些容器的相关信息，进行特殊操作
+	private BeanFactory beanFactory;
+	private ApplicationContext applicationContext;
+	private ClassLoader classLoader;
+	private ResourceLoader resourceLoader;
 
 	@Override
 	public void setBeanName(String name) {
-		setName(name);
 		System.out.println("实现了BeanNameAware接口， beanName:" + name);
 	}
 
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		System.out.println("实现了BeanFactoryAware接口，beanFactory:" + beanFactory);
+		this.beanFactory = beanFactory;
+		System.out.println("实现了BeanFactoryAware接口，beanFactory:" + this.beanFactory);
 	}
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		System.out.println("实现了ApplicationContextAware接口，applicationContext:" + applicationContext);
+		this.applicationContext = applicationContext;
+		System.out.println("实现了ApplicationContextAware接口，applicationContext:" + this.applicationContext);
 	}
 
 	@Override
 	public void setBeanClassLoader(ClassLoader classLoader) {
-		System.out.println("实现了BeanClassLoaderAware接口，classLoader:" + classLoader);
+		this.classLoader = classLoader;
+		System.out.println("实现了BeanClassLoaderAware接口，classLoader:" + this.classLoader);
 	}
 
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
-		System.out.println("实现了ResourceLoaderAware接口，resourceLoader:" + resourceLoader);
+		this.resourceLoader = resourceLoader;
+		System.out.println("实现了ResourceLoaderAware接口，resourceLoader:" + this.resourceLoader);
 	}
 }
