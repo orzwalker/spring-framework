@@ -7,7 +7,9 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +22,15 @@ public class CustomizeAware implements BeanNameAware,
 		BeanFactoryAware,
 		ApplicationContextAware,
 		ResourceLoaderAware,
-		BeanClassLoaderAware {
+		BeanClassLoaderAware,
+		EnvironmentAware {
 
 	// 拿到这些容器的相关信息，进行特殊操作
 	private BeanFactory beanFactory;
 	private ApplicationContext applicationContext;
 	private ClassLoader classLoader;
 	private ResourceLoader resourceLoader;
+	private Environment environment;
 
 	@Override
 	public void setBeanName(String name) {
@@ -55,5 +59,19 @@ public class CustomizeAware implements BeanNameAware,
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 		System.out.println("实现了ResourceLoaderAware接口，resourceLoader:" + this.resourceLoader);
+	}
+
+	@Override
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+		String[] activeProfiles = this.environment.getActiveProfiles();
+		String[] defaultProfiles = this.environment.getDefaultProfiles();
+		for (String activeProfile : activeProfiles) {
+			System.out.println("activeProfile: " + activeProfile);
+		}
+		for (String defaultProfile : defaultProfiles) {
+			System.out.println("defaultProfile: " + defaultProfile);
+		}
+		System.out.println("实现了EnvironmentAware接口，enviroment:" + this.environment);
 	}
 }
