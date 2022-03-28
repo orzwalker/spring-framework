@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @since 2022/1/27 12:26
  */
 @Component
-public class User {
+public class User extends BaseEntity {
 
 	@Value("111")
 	private Long id;

@@ -1,6 +1,8 @@
 package com.testbean;
 
 import com.testbean.config.AppConfig;
+import com.testbean.domain.BaseEntity;
+import com.testbean.domain.User;
 import com.testbean.service.UserService;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -36,5 +38,13 @@ public class TestUser {
 		service.test();
 
 		// service.insertData();
+
+		User user = context.getBean("user", User.class);
+		System.out.println(user.getUk());
+		System.out.println(user.getName());
+
+		BaseEntity baseEntity = context.getBean("user", User.class);
+		System.out.println(baseEntity.getUk());
+		System.out.println(baseEntity.getName()); // 拿到子类的name
 	}
 }
