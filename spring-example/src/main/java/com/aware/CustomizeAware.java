@@ -11,6 +11,7 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,36 +34,36 @@ public class CustomizeAware implements BeanNameAware,
 	private Environment environment;
 
 	@Override
-	public void setBeanName(String name) {
+	public void setBeanName(@NonNull String name) {
 		System.out.println("实现了BeanNameAware接口， beanName:" + name);
 	}
 
 	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+	public void setBeanFactory(@NonNull BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
 		System.out.println("实现了BeanFactoryAware接口，beanFactory:" + this.beanFactory);
 	}
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 		System.out.println("实现了ApplicationContextAware接口，applicationContext:" + this.applicationContext);
 	}
 
 	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
+	public void setBeanClassLoader(@NonNull ClassLoader classLoader) {
 		this.classLoader = classLoader;
 		System.out.println("实现了BeanClassLoaderAware接口，classLoader:" + this.classLoader);
 	}
 
 	@Override
-	public void setResourceLoader(ResourceLoader resourceLoader) {
+	public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 		System.out.println("实现了ResourceLoaderAware接口，resourceLoader:" + this.resourceLoader);
 	}
 
 	@Override
-	public void setEnvironment(Environment environment) {
+	public void setEnvironment(@NonNull Environment environment) {
 		this.environment = environment;
 		String[] activeProfiles = this.environment.getActiveProfiles();
 		String[] defaultProfiles = this.environment.getDefaultProfiles();
