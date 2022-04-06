@@ -43,7 +43,7 @@ public class TestUser {
 		System.out.println(user.getUk());
 		System.out.println(user.getName());
 
-		BaseEntity baseEntity = context.getBean("user", User.class);
+		BaseEntity baseEntity = context.getBean("user", User.class); // user对象
 		System.out.println(baseEntity.getUk());
 		System.out.println(baseEntity.getName()); // 拿到子类的name
 	}
