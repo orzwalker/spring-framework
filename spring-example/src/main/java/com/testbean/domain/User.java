@@ -1,5 +1,6 @@
 package com.testbean.domain;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @since 2022/1/27 12:26
  */
 @Component
-public class User extends BaseEntity {
+public class User extends BaseEntity implements InitializingBean {
 
 	@Value("111")
 	private Long id;
@@ -34,5 +35,11 @@ public class User extends BaseEntity {
 
 	public void test() {
 		System.out.println("invoke test method ...");
+	}
+
+	// 初始化bean的回调
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("初始化Bean-user结束，执行回调方法");
 	}
 }

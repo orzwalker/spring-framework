@@ -520,6 +520,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
+		logger.info("refresh ... ");
 		// 加锁，保证启动、销毁容器串行化
 		synchronized (this.startupShutdownMonitor) {
 
@@ -535,10 +536,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			 * 2.获取beanFactory
 			 * 解析成BeanDefinition，还未初始化，放到BeanFactory====放到<beanName, BeanDefinition> map中
 			 * 完成了所有singleton beans的实例化，接下来等待初始化
-			 *
-			 * xml使用该方法实现bean的加载、解析、注册
-			 * 注解方式使用invokeBeanFactoryPostProcessors
-			 *
 			 * obtain 获得、取得
 			 */
 			// Tell the subclass to refresh the internal bean factory.
