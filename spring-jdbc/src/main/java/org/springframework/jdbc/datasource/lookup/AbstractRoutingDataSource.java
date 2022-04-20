@@ -120,11 +120,13 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 			throw new IllegalArgumentException("Property 'targetDataSources' is required");
 		}
 		this.resolvedDataSources = new HashMap<>(this.targetDataSources.size());
+		// 遍历获取设置的数据源
 		this.targetDataSources.forEach((key, value) -> {
 			Object lookupKey = resolveSpecifiedLookupKey(key);
 			DataSource dataSource = resolveSpecifiedDataSource(value);
 			this.resolvedDataSources.put(lookupKey, dataSource);
 		});
+		// 默认数据源
 		if (this.defaultTargetDataSource != null) {
 			this.resolvedDefaultDataSource = resolveSpecifiedDataSource(this.defaultTargetDataSource);
 		}
@@ -191,6 +193,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 
 	@Override
 	public Connection getConnection() throws SQLException {
+		// 执行JdbcTemplate.execute()方法时，建立连接
 		return determineTargetDataSource().getConnection();
 	}
 
@@ -223,9 +226,13 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 	 */
 	protected DataSource determineTargetDataSource() {
 		Assert.notNull(this.resolvedDataSources, "DataSource router not initialized");
+		// 建立连接前，获取当前线程设置的数据源key
+		// 需要继承AbstractRoutingDataSource，实现determineCurrentLookupKey拿到指定的数据源key
 		Object lookupKey = determineCurrentLookupKey();
+		// 根据设置的key获取数据源
 		DataSource dataSource = this.resolvedDataSources.get(lookupKey);
 		if (dataSource == null && (this.lenientFallback || lookupKey == null)) {
+			// 如果没有设置，获取设置的默认数据源
 			dataSource = this.resolvedDefaultDataSource;
 		}
 		if (dataSource == null) {
