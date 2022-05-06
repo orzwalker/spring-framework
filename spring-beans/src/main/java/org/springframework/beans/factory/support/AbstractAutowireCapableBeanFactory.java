@@ -1934,9 +1934,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (StringUtils.hasLength(initMethodName) &&
 					!(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
 					!mbd.isExternallyManagedInitMethod(initMethodName)) {
+				// 如果定义了init-method方法，执行该方法
+				// 也就是说如果同时使用InitializingBean接口和init-method，则先执行InitializingBean，后执行init-method
 				invokeCustomInitMethod(beanName, bean, mbd);
 			}
 		}
+		// 总结都是为了spring初始化时立即设置一些属性
+		// 使用InitializingBean，和spring框架耦合较多
+		// 使用init-method，使用反射，性能不及InitializingBean，但是推荐使用
 	}
 
 	/**
@@ -1973,6 +1978,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (logger.isTraceEnabled()) {
 			logger.trace("Invoking init method  '" + initMethodName + "' on bean with name '" + beanName + "'");
 		}
+		// init-method方式，通过反射拿到方法名
 		Method methodToInvoke = ClassUtils.getInterfaceMethodIfPossible(initMethod);
 
 		if (System.getSecurityManager() != null) {
@@ -1981,9 +1987,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				return null;
 			});
 			try {
+				// 执行
 				AccessController.doPrivileged((PrivilegedExceptionAction<Object>)
-						() -> methodToInvoke.invoke(bean), getAccessControlContext());
-			}
+						() -> methodToInvoke.invoke(bean), getAccessControlContext()); }
 			catch (PrivilegedActionException pae) {
 				InvocationTargetException ex = (InvocationTargetException) pae.getException();
 				throw ex.getTargetException();

@@ -128,6 +128,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 		this.targetDataSources.forEach((key, value) -> {
 			Object lookupKey = resolveSpecifiedLookupKey(key);
 			DataSource dataSource = resolveSpecifiedDataSource(value);
+			// 处理之后的数据源map
 			this.resolvedDataSources.put(lookupKey, dataSource);
 		});
 		// 默认数据源
