@@ -42,9 +42,11 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractRoutingDataSource extends AbstractDataSource implements InitializingBean {
 
+	// 设置的数据源
 	@Nullable
 	private Map<Object, Object> targetDataSources;
 
+	// 设置的默认数据源
 	@Nullable
 	private Object defaultTargetDataSource;
 
@@ -52,9 +54,11 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 
 	private DataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
 
+	// 执行afterPropertiesSet方法后，数据源被写入到该map
 	@Nullable
 	private Map<Object, DataSource> resolvedDataSources;
 
+	// 执行afterPropertiesSet方法后，默认数据源
 	@Nullable
 	private DataSource resolvedDefaultDataSource;
 
