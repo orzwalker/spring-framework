@@ -31,6 +31,12 @@ package org.springframework.beans.factory;
  * @see org.springframework.beans.factory.config.BeanDefinition#getPropertyValues()
  * @see org.springframework.beans.factory.support.AbstractBeanDefinition#getInitMethodName()
  */
+
+/**
+ * 参考 https://segmentfault.com/a/1190000014105687
+ * 在Bean初始化后执行定制化的操作
+ *
+ */
 public interface InitializingBean {
 
 	/**

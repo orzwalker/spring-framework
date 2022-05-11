@@ -118,6 +118,10 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 	}
 
 
+	/**
+	 * Bean初始化后执行定制化操作
+	 * 拿到已经初始化的Bean，重新赋值DataSource
+	 */
 	@Override
 	public void afterPropertiesSet() {
 		if (this.targetDataSources == null) {
@@ -196,6 +200,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 	}
 
 
+	// 每次查询前建立连接
 	@Override
 	public Connection getConnection() throws SQLException {
 		// 执行JdbcTemplate.execute()方法时，建立连接
@@ -222,6 +227,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 	}
 
 	/**
+	 * 连接前，获取当前DataSource，拿到连接信息
 	 * Retrieve the current target DataSource. Determines the
 	 * {@link #determineCurrentLookupKey() current lookup key}, performs
 	 * a lookup in the {@link #setTargetDataSources targetDataSources} map,
@@ -252,6 +258,9 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 	 * <p>Allows for arbitrary keys. The returned key needs
 	 * to match the stored lookup key type, as resolved by the
 	 * {@link #resolveSpecifiedLookupKey} method.
+	 */
+	/**
+	 * 继承该抽象类的类实现此方法，在连接数据库之前获取DataSource的key
 	 */
 	@Nullable
 	protected abstract Object determineCurrentLookupKey();
