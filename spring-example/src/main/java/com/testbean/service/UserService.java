@@ -34,4 +34,13 @@ public class UserService {
 		// 测试回滚
 		// throw new RuntimeException("mysql");
 	}
+
+	public void save() {
+		int start = 35;
+		int len = 5;
+		for (int i = start; i < start + len; i++) {
+			String sql = "insert into a values(" + i + "," + i + "," + i + ")";
+			jdbcTemplate.execute(sql);
+		}
+	}
 }

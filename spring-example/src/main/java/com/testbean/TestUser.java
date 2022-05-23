@@ -37,6 +37,7 @@ public class TestUser {
 
 		service.test();
 
+		service.save();
 		// service.insertData();
 
 		User user = context.getBean("user", User.class);
