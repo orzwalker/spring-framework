@@ -1,7 +1,6 @@
 package com.testbean.config;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.stereotype.Component;
 
 /**
  * 动态数据源

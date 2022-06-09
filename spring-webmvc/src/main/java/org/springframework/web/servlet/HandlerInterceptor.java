@@ -76,6 +76,9 @@ import org.springframework.web.method.HandlerMethod;
 public interface HandlerInterceptor {
 
 	/**
+	 * 拦截器是链式的，所以可已有多个拦截器，根据注册的先后顺序拦截执行
+	 *
+	 *
 	 * Intercept the execution of a handler. Called after HandlerMapping determined
 	 * an appropriate handler object, but before HandlerAdapter invokes the handler.
 	 * <p>DispatcherServlet processes a handler in an execution chain, consisting
@@ -103,6 +106,10 @@ public interface HandlerInterceptor {
 	/**
 	 * Intercept the execution of a handler. Called after HandlerAdapter actually
 	 * invoked the handler, but before the DispatcherServlet renders the view.
+	 * ==== {@link #preHandle(HttpServletRequest, HttpServletResponse, Object)}方法执行返回TRUE时才会执行该方法
+	 * ==== 并且在视图渲染之前执行
+	 *
+	 *
 	 * Can expose additional model objects to the view via the given ModelAndView.
 	 * <p>DispatcherServlet processes a handler in an execution chain, consisting
 	 * of any number of interceptors, with the handler itself at the end.
@@ -128,6 +135,9 @@ public interface HandlerInterceptor {
 	 * Callback after completion of request processing, that is, after rendering
 	 * the view. Will be called on any outcome of handler execution, thus allows
 	 * for proper resource cleanup.
+	 *
+	 * ==== 主要是清理资源使用
+	 *
 	 * <p>Note: Will only be called if this interceptor's {@code preHandle}
 	 * method has successfully completed and returned {@code true}!
 	 * <p>As with the {@code postHandle} method, the method will be invoked on each

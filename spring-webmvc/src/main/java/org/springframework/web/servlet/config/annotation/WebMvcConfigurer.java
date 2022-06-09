@@ -89,6 +89,7 @@ public interface WebMvcConfigurer {
 	}
 
 	/**
+	 * 注册拦截器
 	 * Add Spring MVC lifecycle interceptors for pre- and post-processing of
 	 * controller method invocations and resource handler requests.
 	 * Interceptors can be registered to apply to all requests or be limited
@@ -106,6 +107,7 @@ public interface WebMvcConfigurer {
 	}
 
 	/**
+	 * 解决跨域问题
 	 * Configure cross origin requests processing.
 	 * @since 4.2
 	 */
