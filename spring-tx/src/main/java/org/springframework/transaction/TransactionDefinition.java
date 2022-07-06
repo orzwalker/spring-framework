@@ -41,8 +41,14 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.support.DefaultTransactionDefinition
  * @see org.springframework.transaction.interceptor.TransactionAttribute
  */
+
+/**
+ * 事务的定义
+ */
 public interface TransactionDefinition {
 
+	// ====================事务传播行为 start ================================
+	// propagation：传播
 	/**
 	 * Support a current transaction; create a new one if none exists.
 	 * Analogous to the EJB transaction attribute of the same name.
@@ -131,6 +137,10 @@ public interface TransactionDefinition {
 	 */
 	int PROPAGATION_NESTED = 6;
 
+	// ====================事务传播行为 end ================================
+
+
+	// =================事务隔离级别 start========================================
 
 	/**
 	 * Use the default isolation level of the underlying datastore.
@@ -182,6 +192,8 @@ public interface TransactionDefinition {
 	 * @see java.sql.Connection#TRANSACTION_SERIALIZABLE
 	 */
 	int ISOLATION_SERIALIZABLE = 8;  // same as java.sql.Connection.TRANSACTION_SERIALIZABLE;
+
+	// =================事务隔离级别 end========================================
 
 
 	/**

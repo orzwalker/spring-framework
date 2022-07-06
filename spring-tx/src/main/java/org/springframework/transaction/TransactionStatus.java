@@ -19,6 +19,7 @@ package org.springframework.transaction;
 import java.io.Flushable;
 
 /**
+ *
  * Representation of the status of a transaction.
  *
  * <p>Transactional code can use this to retrieve status information,
@@ -35,6 +36,12 @@ import java.io.Flushable;
  * @see PlatformTransactionManager#getTransaction
  * @see org.springframework.transaction.support.TransactionCallback#doInTransaction
  * @see org.springframework.transaction.interceptor.TransactionInterceptor#currentTransactionStatus()
+ */
+
+/**
+ *
+ * 事务状态
+ * 嵌套事务下，每个子方法的事务可能不同，所以需要字方法事务的状态
  */
 public interface TransactionStatus extends TransactionExecution, SavepointManager, Flushable {
 

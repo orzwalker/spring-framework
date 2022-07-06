@@ -43,9 +43,19 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.interceptor.TransactionInterceptor
  * @see org.springframework.transaction.ReactiveTransactionManager
  */
+
+/**
+ * 事务管理器的3个核心功能
+ * 1.获取事务资源
+ * 2.提交事务
+ * 3.回滚事务
+ */
 public interface PlatformTransactionManager extends TransactionManager {
 
 	/**
+	 * 获取事务资源
+	 * 根据事务传播行为，使用当前的事务、或者新创建一个事务
+	 *
 	 * Return a currently active transaction or create a new one, according to
 	 * the specified propagation behavior.
 	 * <p>Note that parameters like isolation level or timeout will only be applied
@@ -72,6 +82,8 @@ public interface PlatformTransactionManager extends TransactionManager {
 			throws TransactionException;
 
 	/**
+	 * 提交事务
+	 *
 	 * Commit the given transaction, with regard to its status. If the transaction
 	 * has been marked rollback-only programmatically, perform a rollback.
 	 * <p>If the transaction wasn't a new one, omit the commit for proper
@@ -101,6 +113,8 @@ public interface PlatformTransactionManager extends TransactionManager {
 	void commit(TransactionStatus status) throws TransactionException;
 
 	/**
+	 * 回滚事务
+	 *
 	 * Perform a rollback of the given transaction.
 	 * <p>If the transaction wasn't a new one, just set it rollback-only for proper
 	 * participation in the surrounding transaction. If a previous transaction
