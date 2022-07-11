@@ -330,7 +330,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	//---------------------------------------------------------------------
 
 	/**
-	 * 事务传播行为处理
+	 * 根据不同的事务传播行为，获取事务状态
 	 *
 	 * This implementation handles propagation behavior. Delegates to
 	 * {@code doGetTransaction}, {@code isExistingTransaction}
@@ -364,6 +364,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 		// No existing transaction found -> check propagation behavior to find out how to proceed.
 		if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_MANDATORY) {
+			// 强制使用某种传播行为
 			throw new IllegalTransactionStateException(
 					"No existing transaction found for transaction marked with propagation 'mandatory'");
 		}
@@ -371,6 +372,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		else if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRED ||
 				def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW ||
 				def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) {
+			// 挂起，因为当前没有事务，所以挂起的事务为null
 			SuspendedResourcesHolder suspendedResources = suspend(null);
 			if (debugEnabled) {
 				logger.debug("Creating new transaction with name [" + def.getName() + "]: " + def);
@@ -380,6 +382,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				return startTransaction(def, transaction, debugEnabled, suspendedResources);
 			}
 			catch (RuntimeException | Error ex) {
+				// 恢复
 				resume(null, suspendedResources);
 				throw ex;
 			}
@@ -415,11 +418,15 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 	/**
 	 * Create a TransactionStatus for an existing transaction.
+	 *
+	 * 当前线程已存在事务资源，现在根据事务定义中的传播行为，执行不同的逻辑
+	 * 核心是 挂起-恢复
 	 */
 	private TransactionStatus handleExistingTransaction(
 			TransactionDefinition definition, Object transaction, boolean debugEnabled)
 			throws TransactionException {
 
+		// 不使用事务，抛出异常
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NEVER) {
 			throw new IllegalTransactionStateException(
 					"Existing transaction found for transaction marked with propagation 'never'");
@@ -429,27 +436,33 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			if (debugEnabled) {
 				logger.debug("Suspending current transaction");
 			}
+			// 挂起
 			Object suspendedResources = suspend(transaction);
 			boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);
 			return prepareTransactionStatus(
 					definition, null, false, newSynchronization, debugEnabled, suspendedResources);
 		}
 
+		// 挂起、创建
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW) {
 			if (debugEnabled) {
 				logger.debug("Suspending current transaction, creating new transaction with name [" +
 						definition.getName() + "]");
 			}
+			// 挂起当前事务
 			SuspendedResourcesHolder suspendedResources = suspend(transaction);
 			try {
+				// 创建新事务
 				return startTransaction(definition, transaction, debugEnabled, suspendedResources);
 			}
 			catch (RuntimeException | Error beginEx) {
+				// 恢复当前事务
 				resumeAfterBeginException(transaction, suspendedResources, beginEx);
 				throw beginEx;
 			}
 		}
 
+		// 嵌套事务
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) {
 			if (!isNestedTransactionAllowed()) {
 				throw new NestedTransactionNotSupportedException(
@@ -805,6 +818,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	}
 
 	/**
+	 * 回滚
+	 *
 	 * This implementation of rollback handles participating in existing
 	 * transactions. Delegates to {@code doRollback} and
 	 * {@code doSetRollbackOnly}.
@@ -845,6 +860,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 					if (status.isDebug()) {
 						logger.debug("Initiating transaction rollback");
 					}
+					// 回滚
 					doRollback(status);
 				}
 				else {

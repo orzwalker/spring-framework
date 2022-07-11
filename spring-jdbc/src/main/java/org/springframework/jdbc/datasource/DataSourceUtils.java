@@ -203,15 +203,17 @@ public abstract class DataSourceUtils {
 
 		// Apply specific isolation level, if any.
 		Integer previousIsolationLevel = null;
-		if (definition != null && definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT) {
+		if (definition != null && TransactionDefinition.ISOLATION_DEFAULT != definition.getIsolationLevel()) {
+			int isolationLevel = definition.getIsolationLevel();
 			if (debugEnabled) {
-				logger.debug("Changing isolation level of JDBC Connection [" + con + "] to " +
-						definition.getIsolationLevel());
+				logger.debug("Changing isolation level of JDBC Connection [" + con + "] to " + isolationLevel);
 			}
 			int currentIsolation = con.getTransactionIsolation();
-			if (currentIsolation != definition.getIsolationLevel()) {
+			if (currentIsolation != isolationLevel) {
+				// 之前的隔离级别
 				previousIsolationLevel = currentIsolation;
-				con.setTransactionIsolation(definition.getIsolationLevel());
+				// 现在的隔离级别
+				con.setTransactionIsolation(isolationLevel);
 			}
 		}
 

@@ -326,6 +326,10 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 * @return the return value of the method, if any
 	 * @throws Throwable propagated from the target invocation
 	 */
+	/**
+	 * Spring事务核心处理逻辑
+	 *
+	 */
 	@Nullable
 	protected Object invokeWithinTransaction(Method method, @Nullable Class<?> targetClass,
 			final InvocationCallback invocation) throws Throwable {
@@ -357,21 +361,25 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
 
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
+			// 创建事务资源
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
 			try {
+				// 执行具体的业务方法
 				// This is an around advice: Invoke the next interceptor in the chain.
 				// This will normally result in a target object being invoked.
 				retVal = invocation.proceedWithInvocation();
 			}
 			catch (Throwable ex) {
+				// 异常处理
 				// target invocation exception
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
 			}
 			finally {
+				// 清除事务资源
 				cleanupTransactionInfo(txInfo);
 			}
 
@@ -571,6 +579,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {
+				// 获取事务状态
 				status = tm.getTransaction(txAttr);
 			}
 			else {
@@ -635,6 +644,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	}
 
 	/**
+	 * 抛出异常后，异常处理
+	 *
 	 * Handle a throwable, completing the transaction.
 	 * We may commit or roll back, depending on the configuration.
 	 * @param txInfo information about the current transaction

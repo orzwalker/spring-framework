@@ -83,22 +83,26 @@ public abstract class TransactionSynchronizationManager {
 
 	private static final Log logger = LogFactory.getLog(TransactionSynchronizationManager.class);
 
-	// 只能存放一个事务资源
+	// 存放事务资源
 	private static final ThreadLocal<Map<Object, Object>> resources =
 			new NamedThreadLocal<>("Transactional resources");
 
 	private static final ThreadLocal<Set<TransactionSynchronization>> synchronizations =
 			new NamedThreadLocal<>("Transaction synchronizations");
 
+	// 当前事务名称
 	private static final ThreadLocal<String> currentTransactionName =
 			new NamedThreadLocal<>("Current transaction name");
 
+	// 当前事务是否只读
 	private static final ThreadLocal<Boolean> currentTransactionReadOnly =
 			new NamedThreadLocal<>("Current transaction read-only status");
 
+	// 当前事务隔离级别
 	private static final ThreadLocal<Integer> currentTransactionIsolationLevel =
 			new NamedThreadLocal<>("Current transaction isolation level");
 
+	// 事务是否开启
 	private static final ThreadLocal<Boolean> actualTransactionActive =
 			new NamedThreadLocal<>("Actual transaction active");
 
@@ -186,9 +190,13 @@ public abstract class TransactionSynchronizationManager {
 		Map<Object, Object> map = resources.get();
 		// set ThreadLocal Map if none found
 		if (map == null) {
+			// Entry.value = map; 强引用
 			map = new HashMap<>();
+			// 下边的map.put操作相当于if中添加下边这行代码，只是把公共的方法抽出来放到if外边了
+			// map.put(actualKey, value);
 			resources.set(map);
 		}
+		// 因为Entry.value是强引用，所以这里可以直接修改map的值
 		Object oldValue = map.put(actualKey, value);
 		// Transparently suppress a ResourceHolder that was marked as void...
 		if (oldValue instanceof ResourceHolder && ((ResourceHolder) oldValue).isVoid()) {
@@ -205,6 +213,8 @@ public abstract class TransactionSynchronizationManager {
 	}
 
 	/**
+	 * 解绑事务资源
+	 *
 	 * Unbind a resource for the given key from the current thread.
 	 * @param key the key to unbind (usually the resource factory)
 	 * @return the previously bound value (usually the active resource object)
@@ -241,9 +251,11 @@ public abstract class TransactionSynchronizationManager {
 		if (map == null) {
 			return null;
 		}
+		// TL.remove前先移除map对象
 		Object value = map.remove(actualKey);
 		// Remove entire ThreadLocal if empty...
 		if (map.isEmpty()) {
+			// TL.remove, 防止memory leak
 			resources.remove();
 		}
 		// Transparently suppress a ResourceHolder that was marked as void...

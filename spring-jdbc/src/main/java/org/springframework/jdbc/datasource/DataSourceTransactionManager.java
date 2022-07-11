@@ -268,6 +268,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			txObject.getConnectionHolder().setSynchronizedWithTransaction(true);
 			con = txObject.getConnectionHolder().getConnection();
 
+			// 之前的隔离级别
 			Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);
 			txObject.setPreviousIsolationLevel(previousIsolationLevel);
 			txObject.setReadOnly(definition.isReadOnly());
@@ -284,6 +285,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 				con.setAutoCommit(false);
 			}
 
+			// 设置只读权限
 			prepareTransactionalConnection(con, definition);
 			txObject.getConnectionHolder().setTransactionActive(true);
 
@@ -395,6 +397,8 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 
 	/**
+	 * 设置权限
+	 *
 	 * Prepare the transactional {@code Connection} right after transaction begin.
 	 * <p>The default implementation executes a "SET TRANSACTION READ ONLY" statement
 	 * if the {@link #setEnforceReadOnly "enforceReadOnly"} flag is set to {@code true}

@@ -41,7 +41,8 @@ import java.io.Flushable;
 /**
  *
  * 事务状态
- * 嵌套事务下，每个子方法的事务可能不同，所以需要字方法事务的状态
+ * 嵌套事务下，每个子方法的事务可能不同，所以需要子方法事务的状态
+ * 存储当前事务的数据和状态，比如事务资源、回滚状态等
  */
 public interface TransactionStatus extends TransactionExecution, SavepointManager, Flushable {
 
