@@ -31,6 +31,8 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.util.Assert;
 
 /**
+ * 编程式事务
+ *
  * Template class that simplifies programmatic transaction demarcation and
  * transaction exception handling.
  *
@@ -134,13 +136,16 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 			return ((CallbackPreferringPlatformTransactionManager) this.transactionManager).execute(this, action);
 		}
 		else {
+			// 获取事务资源
 			TransactionStatus status = this.transactionManager.getTransaction(this);
 			T result;
 			try {
+				// 执行callback业务代码
 				result = action.doInTransaction(status);
 			}
 			catch (RuntimeException | Error ex) {
 				// Transactional code threw application exception -> rollback
+				// 调用事务管理器的回滚方法，异常时，默认回滚
 				rollbackOnException(status, ex);
 				throw ex;
 			}
@@ -149,6 +154,7 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 				rollbackOnException(status, ex);
 				throw new UndeclaredThrowableException(ex, "TransactionCallback threw undeclared checked exception");
 			}
+			// 事务管理器，提交事务
 			this.transactionManager.commit(status);
 			return result;
 		}

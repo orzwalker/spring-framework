@@ -327,7 +327,9 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 * @throws Throwable propagated from the target invocation
 	 */
 	/**
-	 * Spring事务核心处理逻辑
+	 * Spring【声明式】事务核心处理逻辑
+	 * 使用AOP interceptor
+	 * 业务代码执行----调用事务管理器 事务提交----回滚
 	 *
 	 */
 	@Nullable
@@ -391,6 +393,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 
+			// 提交事务
 			commitTransactionAfterReturning(txInfo);
 			return retVal;
 		}
@@ -630,6 +633,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	}
 
 	/**
+	 * 调用事务管理器 提交事务
+	 *
 	 * Execute after successful completion of call, but not after an exception was handled.
 	 * Do nothing if we didn't create a transaction.
 	 * @param txInfo information about the current transaction
@@ -657,7 +662,9 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				logger.trace("Completing transaction for [" + txInfo.getJoinpointIdentification() +
 						"] after exception: " + ex);
 			}
+			// 判断异常回滚策略
 			if (txInfo.transactionAttribute != null && txInfo.transactionAttribute.rollbackOn(ex)) {
+				// 直接回滚
 				try {
 					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus());
 				}

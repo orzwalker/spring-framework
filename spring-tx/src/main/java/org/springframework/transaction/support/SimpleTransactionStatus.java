@@ -54,6 +54,10 @@ public class SimpleTransactionStatus extends AbstractTransactionStatus {
 	}
 
 
+	/**
+	 * 每次经过一次事务嵌套，都会创建一个新的TransactionStatus，其中标记了本次事务是否是新事务
+	 * @return
+	 */
 	@Override
 	public boolean isNewTransaction() {
 		return this.newTransaction;

@@ -419,6 +419,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	/**
 	 * Create a TransactionStatus for an existing transaction.
 	 *
+	 * 获取事务资源的时候挂起
 	 * 当前线程已存在事务资源，现在根据事务定义中的传播行为，执行不同的逻辑
 	 * 核心是 挂起-恢复
 	 */
@@ -579,7 +580,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 
 	/**
-	 * 挂起
+	 * 挂起当前事务资源
 	 *
 	 * Suspend the given transaction. Suspends transaction synchronization first,
 	 * then delegates to the {@code doSuspend} template method.
@@ -597,6 +598,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			try {
 				Object suspendedResources = null;
 				if (transaction != null) {
+					// 核心方法
 					suspendedResources = doSuspend(transaction);
 				}
 				String name = TransactionSynchronizationManager.getCurrentTransactionName();
@@ -663,6 +665,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			Object transaction, @Nullable SuspendedResourcesHolder suspendedResources, Throwable beginEx) {
 
 		try {
+			// 恢复事务资源
 			resume(transaction, suspendedResources);
 		}
 		catch (RuntimeException | Error resumeEx) {
@@ -702,6 +705,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 
 	/**
+	 * 提交事务
+	 *
 	 * This implementation of commit handles participating in existing
 	 * transactions and programmatic rollback requests.
 	 * Delegates to {@code isRollbackOnly}, {@code doCommit}
@@ -738,6 +743,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	}
 
 	/**
+	 * 手动提交事务
+	 *
 	 * Process an actual commit.
 	 * Rollback-only flags have already been checked and applied.
 	 * @param status object representing the transaction
@@ -762,10 +769,13 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 					status.releaseHeldSavepoint();
 				}
 				else if (status.isNewTransaction()) {
+					// 当前事务 是 最新事务才提交
 					if (status.isDebug()) {
 						logger.debug("Initiating transaction commit");
 					}
 					unexpectedRollback = status.isGlobalRollbackOnly();
+
+					// 提交
 					doCommit(status);
 				}
 				else if (isFailEarlyOnGlobalRollbackOnly()) {
@@ -838,6 +848,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	}
 
 	/**
+	 * 手动回滚事务
+	 *
 	 * Process an actual rollback.
 	 * The completed flag has already been checked.
 	 * @param status object representing the transaction
@@ -857,6 +869,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 					status.rollbackToHeldSavepoint();
 				}
 				else if (status.isNewTransaction()) {
+					// 只有是最新事务时，才会回滚
 					if (status.isDebug()) {
 						logger.debug("Initiating transaction rollback");
 					}

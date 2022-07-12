@@ -23,6 +23,8 @@ import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 
 /**
+ * 编程式事务接口实现
+ *
  * Interface specifying basic transaction execution operations.
  * Implemented by {@link TransactionTemplate}. Not often used directly,
  * but a useful option to enhance testability, as it can easily be
