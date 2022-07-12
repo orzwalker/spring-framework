@@ -53,6 +53,9 @@ public class DefaultTransactionStatus extends AbstractTransactionStatus {
 	@Nullable
 	private final Object transaction;
 
+	/**
+	 * 新的事务资源
+	 */
 	private final boolean newTransaction;
 
 	private final boolean newSynchronization;
@@ -61,6 +64,9 @@ public class DefaultTransactionStatus extends AbstractTransactionStatus {
 
 	private final boolean debug;
 
+	/**
+	 * 挂起的事务资源
+	 */
 	@Nullable
 	private final Object suspendedResources;
 
