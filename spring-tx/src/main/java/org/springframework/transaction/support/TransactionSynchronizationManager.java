@@ -156,6 +156,7 @@ public abstract class TransactionSynchronizationManager {
 	}
 
 	/**
+	 * 获取事务资源
 	 * Actually check the value of the resource that is bound for the given key.
 	 */
 	@Nullable
@@ -179,8 +180,8 @@ public abstract class TransactionSynchronizationManager {
 
 	/**
 	 * Bind the given resource for the given key to the current thread.
-	 * @param key the key to bind the value to (usually the resource factory)
-	 * @param value the value to bind (usually the active resource object)
+	 * @param key the key to bind the value to (usually the resource factory)，一般是数据源DataSource
+	 * @param value the value to bind (usually the active resource object)，一般是当前连接，ConnectionHolder
 	 * @throws IllegalStateException if there is already a value bound to the thread
 	 * @see ResourceTransactionManager#getResourceFactory()
 	 */
@@ -234,6 +235,8 @@ public abstract class TransactionSynchronizationManager {
 	/**
 	 * Unbind a resource for the given key from the current thread.
 	 * @param key the key to unbind (usually the resource factory)
+	 *
+	 * 重点，清除resources资源后，返回了旧值，也就是map的value----ConnectionHolder，表示线程的数据库连接
 	 * @return the previously bound value, or {@code null} if none bound
 	 */
 	@Nullable
@@ -266,6 +269,7 @@ public abstract class TransactionSynchronizationManager {
 			logger.trace("Removed value [" + value + "] for key [" + actualKey + "] from thread [" +
 					Thread.currentThread().getName() + "]");
 		}
+		// 返回旧值 ConnectionHolder
 		return value;
 	}
 

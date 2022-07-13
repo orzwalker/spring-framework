@@ -399,6 +399,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		}
 
 		else {
+			// 带回调的事务执行处理，一般用于编程试事务
 			Object result;
 			final ThrowableHolder throwableHolder = new ThrowableHolder();
 

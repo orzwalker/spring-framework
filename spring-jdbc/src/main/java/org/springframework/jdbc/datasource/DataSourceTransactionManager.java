@@ -258,6 +258,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 		try {
 			if (!txObject.hasConnectionHolder() ||
 					txObject.getConnectionHolder().isSynchronizedWithTransaction()) {
+				// 获取连接信息，现获取DataSource
 				Connection newCon = obtainDataSource().getConnection();
 				if (logger.isDebugEnabled()) {
 					logger.debug("Acquired Connection [" + newCon + "] for JDBC transaction");
@@ -298,6 +299,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			if (txObject.isNewConnectionHolder()) {
 				// 将事务资源绑定到事务资源管理器上
 				// 放到TL中
+				// map中key是DataSource，比如连接池等；value是ConnectionHolder，里边存放当前连接信息
 				TransactionSynchronizationManager.bindResource(obtainDataSource(), txObject.getConnectionHolder());
 			}
 		}
@@ -315,6 +317,8 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	protected Object doSuspend(Object transaction) {
 		DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
 		txObject.setConnectionHolder(null);
+		// 清空当前的事务资源resources
+		// 返回当前线程上一个事务资源 resources.TL.map.value 也就是ConnectionHolder
 		return TransactionSynchronizationManager.unbindResource(obtainDataSource());
 	}
 
@@ -369,6 +373,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 		// Remove the connection holder from the thread, if exposed.
 		if (txObject.isNewConnectionHolder()) {
+			// 如果是新事务，释放resources TL
 			TransactionSynchronizationManager.unbindResource(obtainDataSource());
 		}
 
