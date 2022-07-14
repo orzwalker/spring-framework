@@ -777,11 +777,13 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				triggerBeforeCompletion(status);
 				beforeCompletionInvoked = true;
 
+				// 如果当前事务有回滚点，在提交的时候需要释放回滚点savepoint
 				if (status.hasSavepoint()) {
 					if (status.isDebug()) {
 						logger.debug("Releasing transaction savepoint");
 					}
 					unexpectedRollback = status.isGlobalRollbackOnly();
+					// 释放回滚点
 					status.releaseHeldSavepoint();
 				}
 				else if (status.isNewTransaction()) {
@@ -886,6 +888,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 						logger.debug("Rolling back transaction to savepoint");
 					}
 					// 回滚到已保存的回滚点
+					// 并释放回滚点
 					status.rollbackToHeldSavepoint();
 				}
 				else if (status.isNewTransaction()) {
