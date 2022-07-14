@@ -365,6 +365,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// 创建事务资源
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
+			// 如果当先线程已存在事务，并且需要重新创建事务，返回值中包含了上个事务的信息  ==== txInfo.getTransactionStatus()
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
@@ -381,7 +382,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				throw ex;
 			}
 			finally {
-				// 清除事务资源
+				// 挂起旧的事务资源，存放到TL中
 				cleanupTransactionInfo(txInfo);
 			}
 
@@ -705,6 +706,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 */
 	protected void cleanupTransactionInfo(@Nullable TransactionInfo txInfo) {
 		if (txInfo != null) {
+			// 存放老的事务到TL中
 			txInfo.restoreThreadLocalStatus();
 		}
 	}
@@ -780,6 +782,9 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			transactionInfoHolder.set(this);
 		}
 
+		/**
+		 * 存储挂起的事务
+		 */
 		private void restoreThreadLocalStatus() {
 			// Use stack to restore old transaction TransactionInfo.
 			// Will be null if none was set.

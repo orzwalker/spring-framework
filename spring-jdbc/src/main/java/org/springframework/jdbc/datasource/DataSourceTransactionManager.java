@@ -324,6 +324,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 	@Override
 	protected void doResume(@Nullable Object transaction, Object suspendedResources) {
+		// 绑定到resources  TL
 		TransactionSynchronizationManager.bindResource(obtainDataSource(), suspendedResources);
 	}
 
@@ -377,6 +378,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			TransactionSynchronizationManager.unbindResource(obtainDataSource());
 		}
 
+		// 还原连接信息
 		// Reset connection.
 		Connection con = txObject.getConnectionHolder().getConnection();
 		try {
@@ -394,6 +396,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			if (logger.isDebugEnabled()) {
 				logger.debug("Releasing JDBC Connection [" + con + "] after transaction");
 			}
+			// 释放当前连接ConnectionHolder
 			DataSourceUtils.releaseConnection(con, this.dataSource);
 		}
 
