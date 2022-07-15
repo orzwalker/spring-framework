@@ -127,6 +127,9 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 	}
 
 
+	/**
+	 * 编程式事务执行入口
+	 */
 	@Override
 	@Nullable
 	public <T> T execute(TransactionCallback<T> action) throws TransactionException {
@@ -136,7 +139,7 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 			return ((CallbackPreferringPlatformTransactionManager) this.transactionManager).execute(this, action);
 		}
 		else {
-			// 获取事务资源
+			// 获取事务资源，同声明式事务
 			TransactionStatus status = this.transactionManager.getTransaction(this);
 			T result;
 			try {
