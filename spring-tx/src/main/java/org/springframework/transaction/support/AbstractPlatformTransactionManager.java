@@ -500,6 +500,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		}
 
 		// Assumably PROPAGATION_SUPPORTS or PROPAGATION_REQUIRED.
+		// 默认情况
 		if (debugEnabled) {
 			logger.debug("Participating in existing transaction");
 		}

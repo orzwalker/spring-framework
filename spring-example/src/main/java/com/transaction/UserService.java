@@ -1,6 +1,5 @@
 package com.transaction;
 
-import com.alibaba.fastjson.JSON;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;

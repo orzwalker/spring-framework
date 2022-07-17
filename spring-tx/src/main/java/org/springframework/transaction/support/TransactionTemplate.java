@@ -129,6 +129,8 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 
 	/**
 	 * 编程式事务执行入口
+	 * 因为没有额外指定传播行为，所以不会创建新的事务资源，共用同一个连接，只是DefaultTransactionStatus对应不用而已
+	 * 同时，也不会有挂起-恢复这样的步骤
 	 */
 	@Override
 	@Nullable
@@ -140,6 +142,7 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 		}
 		else {
 			// 获取事务资源，同声明式事务
+			// 获取事务资源时，确定当前是否是 新事务
 			TransactionStatus status = this.transactionManager.getTransaction(this);
 			T result;
 			try {
@@ -149,6 +152,11 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 			catch (RuntimeException | Error ex) {
 				// Transactional code threw application exception -> rollback
 				// 调用事务管理器的回滚方法，异常时，默认回滚
+				/**
+				 * 编程式 嵌套事务因为使用了同一个连接，外层是新事务，内层是旧事务
+				 * 当内层事务异常时，回滚全部事务====因为内层将异常直接抛给了上层，并且内层不是新事务，所以内层不会回滚
+				 * 外层接收到异常后，当前是新事务，统一回滚
+				 */
 				rollbackOnException(status, ex);
 				throw ex;
 			}
@@ -158,12 +166,14 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 				throw new UndeclaredThrowableException(ex, "TransactionCallback threw undeclared checked exception");
 			}
 			// 事务管理器，提交事务
+			// 编程式嵌套事务时，不设置传播行为，则只有第一次的事务资源是最新的，其他都不是新事务====也就是最外层的事务提交时，会提交所有事务资源
 			this.transactionManager.commit(status);
 			return result;
 		}
 	}
 
 	/**
+	 * 编程式事务 回滚
 	 * Perform a rollback, handling rollback exceptions properly.
 	 * @param status object representing the transaction
 	 * @param ex the thrown application exception or error
