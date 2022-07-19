@@ -652,6 +652,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 	/**
 	 * 抛出异常后，异常处理
+	 * 根据具体的回滚策略决定接下来的动作 回滚 or 提交
+	 * 抛出异常和回滚时两回事，中间没有必然的关联
 	 *
 	 * Handle a throwable, completing the transaction.
 	 * We may commit or roll back, depending on the configuration.
@@ -681,6 +683,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 			else {
+				// 虽然抛出了异常，还是提交
 				// We don't roll back on this exception.
 				// Will still roll back if TransactionStatus.isRollbackOnly() is true.
 				try {

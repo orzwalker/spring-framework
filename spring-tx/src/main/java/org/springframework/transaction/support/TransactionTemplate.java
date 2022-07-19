@@ -161,6 +161,7 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 				throw ex;
 			}
 			catch (Throwable ex) {
+				// 抛出异常，直接回滚
 				// Transactional code threw unexpected exception -> rollback
 				rollbackOnException(status, ex);
 				throw new UndeclaredThrowableException(ex, "TransactionCallback threw undeclared checked exception");
