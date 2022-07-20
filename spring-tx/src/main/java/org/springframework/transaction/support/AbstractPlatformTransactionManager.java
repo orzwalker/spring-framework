@@ -486,7 +486,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				DefaultTransactionStatus status =
 						prepareTransactionStatus(definition, transaction, false, false, debugEnabled, null);
 				// 创建回滚点
-				// 嵌套事务最终一把提交，因为只有第一个事务是新事物，其他都不是
+				// 嵌套事务最终一把提交，因为只有第一个事务是新事物，其他都不是，newTransaction = FALSE
 				// 为了防止回滚时把所有数据都回滚，所以设置了回滚点
 				status.createAndHoldSavepoint();
 				return status;

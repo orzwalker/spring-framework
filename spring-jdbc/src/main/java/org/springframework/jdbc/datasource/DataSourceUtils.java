@@ -204,15 +204,18 @@ public abstract class DataSourceUtils {
 		// Apply specific isolation level, if any.
 		Integer previousIsolationLevel = null;
 		if (definition != null && TransactionDefinition.ISOLATION_DEFAULT != definition.getIsolationLevel()) {
+			// Spring事务隔离级别
 			int isolationLevel = definition.getIsolationLevel();
 			if (debugEnabled) {
 				logger.debug("Changing isolation level of JDBC Connection [" + con + "] to " + isolationLevel);
 			}
+			// 数据库的实际隔离级别
 			int currentIsolation = con.getTransactionIsolation();
 			if (currentIsolation != isolationLevel) {
 				// 之前的隔离级别
 				previousIsolationLevel = currentIsolation;
-				// 现在的隔离级别
+				// 现在的隔离级别，使用了Spring
+				// 也就是说当数据库和Spring使用的隔离级别不同的话，以spring的为主
 				con.setTransactionIsolation(isolationLevel);
 			}
 		}
