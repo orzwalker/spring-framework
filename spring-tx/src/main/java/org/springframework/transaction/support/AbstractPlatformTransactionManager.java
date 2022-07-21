@@ -539,6 +539,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			TransactionDefinition definition, @Nullable Object transaction, boolean newTransaction,
 			boolean newSynchronization, boolean debug, @Nullable Object suspendedResources) {
 
+		// 再次封装，将要刮起的事务资源进行封装
 		DefaultTransactionStatus status = newTransactionStatus(
 				definition, transaction, newTransaction, newSynchronization, debug, suspendedResources);
 		prepareSynchronization(status, definition);
@@ -608,11 +609,11 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		if (TransactionSynchronizationManager.isSynchronizationActive()) {
 			List<TransactionSynchronization> suspendedSynchronizations = doSuspendSynchronization();
 			try {
-				// 挂起的事务资源
+				// 要挂起的事务资源
 				Object suspendedResources = null;
 				if (transaction != null) {
 					// 核心方法
-					// 清除当前的resource
+					// 清除当前的resource，并返回要挂起的事务资源
 					suspendedResources = doSuspend(transaction);
 				}
 				String name = TransactionSynchronizationManager.getCurrentTransactionName();
@@ -623,6 +624,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(null);
 				boolean wasActive = TransactionSynchronizationManager.isActualTransactionActive();
 				TransactionSynchronizationManager.setActualTransactionActive(false);
+				// 封装并返回
 				return new SuspendedResourcesHolder(
 						suspendedResources, suspendedSynchronizations, name, readOnly, isolationLevel, wasActive);
 			}
@@ -1337,13 +1339,15 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 
 	/**
+	 * 持有挂起的事务资源
+	 *
 	 * Holder for suspended resources.
 	 * Used internally by {@code suspend} and {@code resume}.
 	 */
 	protected static final class SuspendedResourcesHolder {
 
 		/**
-		 * 挂起的事务资源
+		 * 存放挂起的事务资源
 		 */
 		@Nullable
 		private final Object suspendedResources;
