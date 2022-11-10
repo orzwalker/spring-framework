@@ -14,6 +14,7 @@ public class TestTransactionTemplate {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 		UserService bean = context.getBean(UserService.class);
 		bean.test();
+		bean.incrFiledD();
 	}
 
 }

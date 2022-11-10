@@ -19,6 +19,9 @@ package org.springframework.transaction.support;
 import java.io.Flushable;
 
 /**
+ * Spring提供的事务扩展接口
+ * 事务执行结束（commit、rollback、error）时，可以调用提供的接口进行拓展
+ *
  * Interface for transaction synchronization callbacks.
  * Supported by AbstractPlatformTransactionManager.
  *
@@ -122,7 +125,8 @@ public interface TransactionSynchronization extends Flushable {
 	}
 
 	/**
-	 * Invoked after transaction commit/rollback.
+	 * Invoked after transaction commit/rollback.（包括commit和rollback，都是完成状态）
+	 *
 	 * Can perform resource cleanup <i>after</i> transaction completion.
 	 * <p><b>NOTE:</b> The transaction will have been committed or rolled back already,
 	 * but the transactional resources might still be active and accessible. As a

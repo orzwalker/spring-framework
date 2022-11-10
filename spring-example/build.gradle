@@ -19,7 +19,7 @@ dependencies {
     implementation(project(":spring-tx"))
     implementation(project(":spring-jdbc"))
     // MySQL连接驱动
-    compile("mysql:mysql-connector-java:5.1.34")
+    compile("mysql:mysql-connector-java:8.0.11")
     compile("com.alibaba:fastjson:1.2.76")
     compile("com.github.shyiko:mysql-binlog-connector-java:0.21.0")
 }
