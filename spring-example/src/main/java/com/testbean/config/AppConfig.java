@@ -46,9 +46,9 @@ public class AppConfig {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setUrl("jdbc:mysql://82.156.26.80:3306/leo?characterEncoding=utf-8&useSSL=false");
+		dataSource.setUrl("jdbc:mysql://localhost:3306/leo?characterEncoding=utf-8&useSSL=false");
 		dataSource.setUsername("root");
-		dataSource.setPassword("leo_mysql_123456");
+		dataSource.setPassword("leomysql123");
 		return dataSource;
 	}
 }

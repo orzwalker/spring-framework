@@ -63,6 +63,7 @@ import org.springframework.beans.BeansException;
 /**
  * 如果某个bean实现了该接口，在容器初始化后，spring会负责调用postProcessBeanFactory方法
  * 也就是说可以通过实现该接口，可以在BeanFactory创建后进一步设置
+ * 所有的Bean的定义信息都已经加载好了，但是还没有实例化时，执行该方法
  */
 @FunctionalInterface
 public interface BeanFactoryPostProcessor {
