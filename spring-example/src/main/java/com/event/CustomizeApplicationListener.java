@@ -2,6 +2,7 @@ package com.event;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.context.ApplicationListener;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,8 +13,7 @@ import org.springframework.stereotype.Component;
 public class CustomizeApplicationListener implements ApplicationListener<CustomizeApplicationEvent> {
 
 	@Override
-	public void onApplicationEvent(CustomizeApplicationEvent event) {
-		String res = JSON.toJSON(event).toString();
-		System.out.println(res);
+	public void onApplicationEvent(@NonNull CustomizeApplicationEvent event) {
+		System.out.println(Thread.currentThread().getName() + "-interface ApplicationListener: " + JSON.toJSON(event).toString());
 	}
 }
