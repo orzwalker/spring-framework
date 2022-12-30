@@ -19,6 +19,7 @@ package org.springframework.context.event;
 import org.springframework.context.ApplicationContext;
 
 /**
+ * Spring Context启动完成时间
  * Event raised when an {@code ApplicationContext} gets started.
  *
  * @author Mark Fisher

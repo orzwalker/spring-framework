@@ -19,6 +19,8 @@ package org.springframework.context.event;
 import org.springframework.context.ApplicationContext;
 
 /**
+ * Spring Context停止完成事件
+ *
  * Event raised when an {@code ApplicationContext} gets stopped.
  *
  * @author Mark Fisher

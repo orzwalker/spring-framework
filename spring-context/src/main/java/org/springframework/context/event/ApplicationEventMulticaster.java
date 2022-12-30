@@ -22,6 +22,9 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
+ * 事件管理者
+ * 用于事件监听器的注册、移除、事件广播
+ *
  * Interface to be implemented by objects that can manage a number of
  * {@link ApplicationListener} objects and publish events to them.
  *
@@ -76,7 +79,7 @@ public interface ApplicationEventMulticaster {
 	void multicastEvent(ApplicationEvent event);
 
 	/**
-	 * Multicast the given application event to appropriate listeners.
+	 * Multicast(广播) the given application event to appropriate(合适的) listeners.
 	 * <p>If the {@code eventType} is {@code null}, a default type is built
 	 * based on the {@code event} instance.
 	 * @param event the event to multicast
