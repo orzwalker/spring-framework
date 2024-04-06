@@ -359,6 +359,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			return handleExistingTransaction(def, transaction, debugEnabled);
 		}
 
+		// 从这开始，不存在事务，需要检查判断事务定义是否满足条件
 		// Check definition settings for new transaction.
 		if (def.getTimeout() < TransactionDefinition.TIMEOUT_DEFAULT) {
 			throw new InvalidTimeoutException("Invalid transaction timeout", def.getTimeout());
@@ -410,6 +411,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 		boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
 		// 事务状态，newTransaction = true
+		// 创建新的status
 		DefaultTransactionStatus status = newTransactionStatus(
 				definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
 		// 开启事务
@@ -455,7 +457,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				logger.debug("Suspending current transaction, creating new transaction with name [" +
 						definition.getName() + "]");
 			}
-			// 挂起当前事务
+			// 挂起当前事务，返回要挂起线程的全部信息
 			SuspendedResourcesHolder suspendedResources = suspend(transaction);
 			try {
 				// 创建新事务
@@ -482,7 +484,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				// Create savepoint within existing Spring-managed transaction,
 				// through the SavepointManager API implemented by TransactionStatus.
 				// Usually uses JDBC 3.0 savepoints. Never activates Spring synchronization.
-				// newTransaction = false
+				// newTransaction = false，注意这个
+				// 每次嵌套都会创建一个新的status
 				DefaultTransactionStatus status =
 						prepareTransactionStatus(definition, transaction, false, false, debugEnabled, null);
 				// 创建回滚点
@@ -624,7 +627,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(null);
 				boolean wasActive = TransactionSynchronizationManager.isActualTransactionActive();
 				TransactionSynchronizationManager.setActualTransactionActive(false);
-				// 封装并返回
+				// 封装上个事务的基本信息并返回
 				return new SuspendedResourcesHolder(
 						suspendedResources, suspendedSynchronizations, name, readOnly, isolationLevel, wasActive);
 			}

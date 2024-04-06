@@ -22,4 +22,17 @@ public class AopService {
 	public void testLogAspect() {
 		System.out.println("logAspect ...");
 	}
+
+	@LogAspect
+	public void a() {
+		System.out.println("a ...");
+		this.b();
+	}
+
+	@LogAspect
+	public void b() {
+		System.out.println("b ...");
+	}
+
+
 }

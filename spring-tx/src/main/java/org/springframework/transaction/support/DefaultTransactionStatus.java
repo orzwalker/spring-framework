@@ -95,6 +95,7 @@ public class DefaultTransactionStatus extends AbstractTransactionStatus {
 		this.newSynchronization = newSynchronization;
 		this.readOnly = readOnly;
 		this.debug = debug;
+		// 挂起的线程，后续需要唤醒
 		this.suspendedResources = suspendedResources;
 	}
 

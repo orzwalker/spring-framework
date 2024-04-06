@@ -10,5 +10,8 @@ public class TestAop {
 		System.out.println("初始化前赋值id " + aopService.getId());
 		System.out.println("\n");
 		aopService.testLogAspect();
+
+		System.out.println("=============");
+		aopService.a();
 	}
 }
